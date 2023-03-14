@@ -1,0 +1,47 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# models and/or data
+*.pt
+*.pth
+*.dat
+*.h5
+*.zip
+*.tar.gz
+*.tar
+*.pkl
+*.pickle
+*.ckpt
+*.npz
+*.gz
+
+# C extensions
+*.so
+
+# Distribution / packaging
+*.DS_Store
+
+# Image files
+*.png
+*.jpg
+*.jpeg
+*.JPEG
+
+# small files
+*.html
+*.json
+*.txt
+
+# test data files
+*-ubyte
+*.meta
+*-ubyte.gz
+*data_batch_*
+*test_batch*
+
+
