@@ -74,8 +74,19 @@ class LongTermMemoryManager:
 
     def fetch_memory_related_to_conversation_seq(self, conversation_sequence_query, num_neighbors=3, min_similarity=0.4, minimal_output=False):
 
+        # do some things that are related to low number of memories stored
+        num_memories = len(self.memories)
+        if num_memories == 0:
+            if minimal_output:
+                return []
+            else:
+                return [], {'memory_indices': [], 'memory_similarities': [], 'neighbors_filepaths': []}
+        num_neighbors = min(num_neighbors, num_memories)
+
+        # get embedding of the conversation sequence query
         embedding = self.get_embedding_from_conversation_seq(conversation_sequence_query)
 
+        # calculate similtities and get the indices of the most similar memories
         similarities = np.dot(self.memories_embeddings, np.array(embedding)[:,np.newaxis]).flatten()
         neighbors_indices = np.argsort(similarities)[::-1][:num_neighbors]
 

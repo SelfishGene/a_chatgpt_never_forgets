@@ -1,9 +1,9 @@
-import gradio as gr
 import os
-import openai
 import time
-from long_term_memory_manager import LongTermMemoryManager
+import openai
+import gradio as gr
 import prompt_utils
+from long_term_memory_manager import LongTermMemoryManager
 
 #%% bookkeeping
 
@@ -50,6 +50,8 @@ price_per_1000_tokens_chatgpt = 0.002
 price_per_1000_tokens_embedding = 0.0004
 
 # instantiate long term memory manager with the path to the memory file "memories_David"
+# create folder if it doesnt exist
+os.makedirs(memory_folderename, exist_ok=True)
 memory_manager = LongTermMemoryManager(memory_folderename, prompt_utils.get_current_time())
 
 # initialize conversation history
@@ -142,12 +144,12 @@ def update_post_fetch_message(post_fetch_slider, state):
 
 # restart the conversation
 def restart_conversation_from_scratch():
-    state = get_empty_state()
+    state = get_empty_state_dict()
     memory_manager.load_memories()
     return gr.update(value=None), None, '', state
 
 
-def get_empty_state():
+def get_empty_state_dict():
 
     state_dict = {
         'session start': None, 
@@ -160,8 +162,7 @@ def get_empty_state():
         'post_fetch_history_list': [], 
         'pre_fetch_history_list': []}
     
-    return gr.State(state_dict)
-
+    return state_dict
 
 # the main function that is called when the user submits a message
 def submit_message(user_prompt_string, state):
@@ -325,7 +326,7 @@ css = """
 with gr.Blocks(css=css) as app:
 
     # initialize the state
-    state = get_empty_state()
+    state = gr.State(get_empty_state_dict())
 
     # define the layout of the app (left tab - main chatbot)
     with gr.Tab(label = "Chatbot Main Tab"):
@@ -366,7 +367,6 @@ with gr.Blocks(css=css) as app:
                             outputs=[pre_fetch_memory_box, pre_fetch_internal_thoughs_box, pre_fetch_response_box, pre_fetch_usage_box])
     post_fetch_slider.change(update_post_fetch_message, inputs=[post_fetch_slider, state], 
                              outputs=[post_fetch_memory_box, post_fetch_internal_thoughs_box, post_fetch_response_box, post_fetch_usage_box])
-
 
 
 app.launch()
